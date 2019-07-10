@@ -1,0 +1,12 @@
+[package]
+name = "rhuffle"
+version = "0.1.0"
+authors = ["ctylim <lim.0.ctyl@gmail.com>"]
+build = "build.rs"
+edition = "2018"
+
+[dependencies]
+rand = "0.7.0"
+log = "0.4.6"
+env_logger = "0.6.2"
+clap = "2.33.0"
