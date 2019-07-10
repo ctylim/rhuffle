@@ -1,11 +1,13 @@
+use crate::shuffler::exec::Shuffler;
 use clap::{App, Arg};
 
 #[derive(Debug)]
 pub struct Config {
-    pub shuffle_level: u32,
+    pub shuffler: Shuffler,
     pub log_level: String,
     pub source: String,
     pub destination: String,
+    pub temporary: String,
     pub buffer_size: usize,
 }
 
@@ -25,8 +27,8 @@ impl Config {
                 Arg::with_name("level")
                     .short("l")
                     .long("level")
-                    .value_name("NUMBER")
-                    .help("Sets shuffle level. (default: 1)")
+                    .value_name("hard|soft")
+                    .help("Sets shuffle level. (default: hard)")
                     .takes_value(true),
             )
             .arg(
@@ -51,6 +53,13 @@ impl Config {
                     .takes_value(true),
             )
             .arg(
+                Arg::with_name("tmp")
+                    .long("tmp")
+                    .value_name("PATH")
+                    .help("Sets directory path where temporary files will be located when input size exceeds buffer.")
+                    .takes_value(true),
+            )
+            .arg(
                 Arg::with_name("buffer")
                     .long("buf")
                     .value_name("NUMBER")
@@ -60,10 +69,8 @@ impl Config {
             .get_matches();
         let parse_failed =
             |a: &str, s: &str| format!("Parse failed in command argument {}: {}", a, s);
-        if let Some(shuffle_level) = matches.value_of("level") {
-            config.shuffle_level = shuffle_level
-                .parse()
-                .expect(&parse_failed("shuffle_level", shuffle_level));
+        if let Some(shuffler) = matches.value_of("level") {
+            config.shuffler = shuffler.parse().expect(&parse_failed("shuffler", shuffler));
         }
         if let Some(log_level) = matches.value_of("log") {
             config.log_level = log_level
@@ -76,7 +83,12 @@ impl Config {
         if let Some(destination) = matches.value_of("dst") {
             config.destination = destination
                 .parse()
-                .expect(&parse_failed("log_level", destination));
+                .expect(&parse_failed("destination", destination));
+        }
+        if let Some(temporary) = matches.value_of("tmp") {
+            config.temporary = temporary
+                .parse()
+                .expect(&parse_failed("temporary", temporary));
         }
         if let Some(buffer_size) = matches.value_of("buffer") {
             config.buffer_size = buffer_size
@@ -94,10 +106,11 @@ impl Config {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            shuffle_level: 1,
+            shuffler: Default::default(),
             log_level: "off".to_string(),
             source: "".to_string(),
             destination: "".to_string(),
+            temporary: "./".to_string(),
             buffer_size: 3000,
         }
     }
