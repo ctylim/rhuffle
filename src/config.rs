@@ -7,7 +7,6 @@ pub struct Config {
     pub log_level: String,
     pub source: String,
     pub destination: String,
-    pub temporary: String,
     pub buffer_size: usize,
 }
 
@@ -53,13 +52,6 @@ impl Config {
                     .takes_value(true),
             )
             .arg(
-                Arg::with_name("tmp")
-                    .long("tmp")
-                    .value_name("PATH")
-                    .help("Sets directory path where temporary files will be located when input size exceeds buffer.")
-                    .takes_value(true),
-            )
-            .arg(
                 Arg::with_name("buffer")
                     .long("buf")
                     .value_name("NUMBER")
@@ -85,11 +77,6 @@ impl Config {
                 .parse()
                 .expect(&parse_failed("destination", destination));
         }
-        if let Some(temporary) = matches.value_of("tmp") {
-            config.temporary = temporary
-                .parse()
-                .expect(&parse_failed("temporary", temporary));
-        }
         if let Some(buffer_size) = matches.value_of("buffer") {
             config.buffer_size = buffer_size
                 .parse()
@@ -110,7 +97,6 @@ impl Default for Config {
             log_level: "off".to_string(),
             source: "".to_string(),
             destination: "".to_string(),
-            temporary: "./".to_string(),
             buffer_size: 3000,
         }
     }

@@ -16,4 +16,5 @@ pub fn shuffle(reader: &mut BufReader<File>, writer: &mut BufWriter<File>, conf:
             writer.write(format!("{}", rows[i]).as_bytes()).unwrap();
         }
     }
+    info!("finished writing to destination file");
 }
