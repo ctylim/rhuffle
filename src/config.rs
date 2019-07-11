@@ -55,7 +55,7 @@ impl Config {
                 Arg::with_name("buffer")
                     .long("buf")
                     .value_name("NUMBER")
-                    .help("Sets buffer size which is approximately equivalent to available RAM with bytes (default: 1000).")
+                    .help("Sets buffer size which is approximately equivalent to available RAM with bytes (default: 3000).")
                     .takes_value(true),
             )
             .get_matches();
