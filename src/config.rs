@@ -57,7 +57,7 @@ impl Config {
                     .short("b")
                     .long("buf")
                     .value_name("NUMBER")
-                    .help("Sets buffer size which is smaller than available RAM with bytes (default: 3000).")
+                    .help("Sets buffer size which is smaller than available RAM with bytes (default: 4294967296).")
                     .takes_value(true),
             )
             .arg(
@@ -112,7 +112,7 @@ impl Default for Config {
             log_level: "off".to_string(),
             source: None,
             destination: None,
-            buffer_size: 3000,
+            buffer_size: 4294967296,
             head: 0,
         }
     }

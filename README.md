@@ -20,7 +20,7 @@ FLAGS:
 
 OPTIONS:
     -b, --buf <NUMBER>
-            Sets buffer size which is smaller than available RAM with bytes (default: 3000).
+            Sets buffer size which is smaller than available RAM with bytes (default: 4294967296).
 
         --dst <Option<PATH>>
             Sets destination file path. If not set, destination sets to stdout. (default: None)
