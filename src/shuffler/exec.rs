@@ -1,8 +1,6 @@
 use super::{hard, soft};
 use crate::config::Config;
-use std::fs::File;
-use std::io::{BufReader, BufWriter, BufRead};
-use std::io::Write;
+use std::io::{BufRead, Write};
 use std::str::FromStr;
 
 #[derive(Debug, Copy, Clone)]
@@ -29,12 +27,7 @@ impl FromStr for Shuffler {
 }
 
 impl Shuffler {
-    pub fn shuffle(
-        &self,
-        reader: &mut BufReader<File>,
-        writer: &mut BufWriter<File>,
-        conf: &Config,
-    ) {
+    pub fn shuffle(&self, reader: &mut BufRead, writer: &mut Write, conf: &Config) {
         if conf.head > 0 {
             info!("forwarding head {} lines", conf.head);
         }
@@ -43,10 +36,10 @@ impl Shuffler {
             match reader.read_line(&mut buf) {
                 Ok(0) => {
                     panic!("EOF detected while reading head {}-th line", i);
-                },
+                }
                 Ok(_) => {
                     writer.write(format!("{}", buf).as_bytes()).unwrap();
-                },
+                }
                 Err(e) => {
                     panic!("An error occurred while reading line: {}", e);
                 }

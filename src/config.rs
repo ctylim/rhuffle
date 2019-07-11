@@ -5,8 +5,8 @@ use clap::{App, Arg};
 pub struct Config {
     pub shuffler: Shuffler,
     pub log_level: String,
-    pub source: String,
-    pub destination: String,
+    pub source: Option<String>,
+    pub destination: Option<String>,
     pub buffer_size: usize,
     pub head: usize,
 }
@@ -41,15 +41,15 @@ impl Config {
             .arg(
                 Arg::with_name("src")
                     .long("src")
-                    .value_name("PATH")
-                    .help("Sets source file path.")
+                    .value_name("Option<PATH>")
+                    .help("Sets source file path. If not set, source sets to stdin. (default: None)")
                     .takes_value(true),
             )
             .arg(
                 Arg::with_name("dst")
                     .long("dst")
-                    .value_name("PATH")
-                    .help("Sets destination file path.")
+                    .value_name("Option<PATH>")
+                    .help("Sets destination file path. If not set, destination sets to stdout. (default: None)")
                     .takes_value(true),
             )
             .arg(
@@ -80,12 +80,14 @@ impl Config {
                 .expect(&parse_failed("log_level", log_level));
         }
         if let Some(source) = matches.value_of("src") {
-            config.source = source.parse().expect(&parse_failed("source", source));
+            config.source = Some(source.parse().expect(&parse_failed("source", source)));
         }
         if let Some(destination) = matches.value_of("dst") {
-            config.destination = destination
-                .parse()
-                .expect(&parse_failed("destination", destination));
+            config.destination = Some(
+                destination
+                    .parse()
+                    .expect(&parse_failed("destination", destination)),
+            );
         }
         if let Some(buffer_size) = matches.value_of("buffer") {
             config.buffer_size = buffer_size
@@ -93,9 +95,7 @@ impl Config {
                 .expect(&parse_failed("buffer_size", buffer_size));
         }
         if let Some(head) = matches.value_of("head") {
-            config.head = head
-                .parse()
-                .expect(&parse_failed("head", head));
+            config.head = head.parse().expect(&parse_failed("head", head));
         }
         config
     }
@@ -110,8 +110,8 @@ impl Default for Config {
         Self {
             shuffler: Default::default(),
             log_level: "off".to_string(),
-            source: "".to_string(),
-            destination: "".to_string(),
+            source: None,
+            destination: None,
             buffer_size: 3000,
             head: 0,
         }

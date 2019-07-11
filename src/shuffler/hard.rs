@@ -4,8 +4,7 @@ use crate::io::*;
 use crate::shuffle::*;
 use rand::{thread_rng, Rng};
 use std::fs::File;
-use std::io::Write;
-use std::io::{BufRead, BufReader, BufWriter};
+use std::io::{BufRead, BufReader, Write};
 use tempfile::NamedTempFile;
 
 struct TmpFile {
@@ -13,7 +12,7 @@ struct TmpFile {
     file: NamedTempFile,
 }
 
-pub fn shuffle(reader: &mut BufReader<File>, writer: &mut BufWriter<File>, conf: &Config) {
+pub fn shuffle(reader: &mut BufRead, writer: &mut Write, conf: &Config) {
     info!("tmp dir name: {:?}", std::env::temp_dir());
     let mut tmp_files: Vec<TmpFile> = Vec::new();
     let mut total_rows: usize = 0;

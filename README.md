@@ -22,11 +22,14 @@ OPTIONS:
     -b, --buf <NUMBER>
             Sets buffer size which is smaller than available RAM with bytes (default: 3000).
 
-        --dst <PATH>                               Sets destination file path.
+        --dst <Option<PATH>>
+            Sets destination file path. If not set, destination sets to stdout. (default: None)
+
     -h, --head <NUMBER>                            Sets first `n` lines without shuffling (default: 0).
     -l, --level <hard|soft>                        Sets shuffle level. (default: hard)
         --log <off|error|warn|info|debug|trace>    Sets log level. (default: off)
-        --src <PATH>                               Sets source file path.
+        --src <Option<PATH>>
+            Sets source file path. If not set, source sets to stdin. (default: None)
 ```
 
 ## Benchmarks
