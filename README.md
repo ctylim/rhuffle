@@ -20,7 +20,7 @@ FLAGS:
 
 OPTIONS:
     -b, --buf <NUMBER>
-            Sets buffer size which is approximately equivalent to available RAM with bytes (default: 3000).
+            Sets buffer size which is smaller than available RAM with bytes (default: 3000).
 
         --dst <PATH>                               Sets destination file path.
     -h, --head <NUMBER>                            Sets first `n` lines without shuffling (default: 0).

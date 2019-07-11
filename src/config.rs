@@ -57,7 +57,7 @@ impl Config {
                     .short("b")
                     .long("buf")
                     .value_name("NUMBER")
-                    .help("Sets buffer size which is approximately equivalent to available RAM with bytes (default: 3000).")
+                    .help("Sets buffer size which is smaller than available RAM with bytes (default: 3000).")
                     .takes_value(true),
             )
             .arg(
