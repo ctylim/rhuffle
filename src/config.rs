@@ -8,6 +8,7 @@ pub struct Config {
     pub source: String,
     pub destination: String,
     pub buffer_size: usize,
+    pub head: usize,
 }
 
 impl Config {
@@ -53,9 +54,18 @@ impl Config {
             )
             .arg(
                 Arg::with_name("buffer")
+                    .short("b")
                     .long("buf")
                     .value_name("NUMBER")
                     .help("Sets buffer size which is approximately equivalent to available RAM with bytes (default: 3000).")
+                    .takes_value(true),
+            )
+            .arg(
+                Arg::with_name("head")
+                    .short("h")
+                    .long("head")
+                    .value_name("NUMBER")
+                    .help("Sets first `n` lines without shuffling (default: 0).")
                     .takes_value(true),
             )
             .get_matches();
@@ -82,6 +92,11 @@ impl Config {
                 .parse()
                 .expect(&parse_failed("buffer_size", buffer_size));
         }
+        if let Some(head) = matches.value_of("head") {
+            config.head = head
+                .parse()
+                .expect(&parse_failed("head", head));
+        }
         config
     }
 
@@ -98,6 +113,7 @@ impl Default for Config {
             source: "".to_string(),
             destination: "".to_string(),
             buffer_size: 3000,
+            head: 0,
         }
     }
 }
