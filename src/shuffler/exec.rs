@@ -1,57 +1,24 @@
-use super::{hard, soft};
+use super::shuffle;
 use crate::config::Config;
 use std::io::{BufRead, Write};
-use std::str::FromStr;
 
-#[derive(Debug, Copy, Clone)]
-pub enum Shuffler {
-    Soft,
-    Hard,
-}
-
-impl Default for Shuffler {
-    fn default() -> Shuffler {
-        Shuffler::Hard
+pub fn shuffle(reader: &mut BufRead, writer: &mut Write, conf: &Config) {
+    if conf.head > 0 {
+        info!("forwarding head {} lines", conf.head);
     }
-}
-
-impl FromStr for Shuffler {
-    type Err = std::string::ParseError;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "soft" => Result::Ok(Shuffler::Soft),
-            "hard" => Result::Ok(Shuffler::Hard),
-            _ => panic!("Shuffler parse error."),
-        }
-    }
-}
-
-impl Shuffler {
-    pub fn shuffle(&self, reader: &mut BufRead, writer: &mut Write, conf: &Config) {
-        if conf.head > 0 {
-            info!("forwarding head {} lines", conf.head);
-        }
-        for i in 0..conf.head {
-            let mut buf = String::new();
-            match reader.read_line(&mut buf) {
-                Ok(0) => {
-                    panic!("EOF detected while reading head {}-th line", i);
-                }
-                Ok(_) => {
-                    writer.write(format!("{}", buf).as_bytes()).unwrap();
-                }
-                Err(e) => {
-                    panic!("An error occurred while reading line: {}", e);
-                }
+    for i in 0..conf.head {
+        let mut buf = String::new();
+        match reader.read_line(&mut buf) {
+            Ok(0) => {
+                panic!("EOF detected while reading head {}-th line", i);
             }
-        }
-        match self {
-            Shuffler::Soft => {
-                soft::shuffle(reader, writer, &conf);
+            Ok(_) => {
+                writer.write(format!("{}", buf).as_bytes()).unwrap();
             }
-            Shuffler::Hard => {
-                hard::shuffle(reader, writer, &conf);
+            Err(e) => {
+                panic!("An error occurred while reading line: {}", e);
             }
         }
     }
+    shuffle::shuffle(reader, writer, &conf);
 }

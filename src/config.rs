@@ -1,9 +1,7 @@
-use crate::shuffler::exec::Shuffler;
 use clap::{App, Arg};
 
 #[derive(Debug)]
 pub struct Config {
-    pub shuffler: Shuffler,
     pub log_level: String,
     pub source: Option<String>,
     pub destination: Option<String>,
@@ -23,14 +21,6 @@ impl Config {
             .long_version(version.as_ref())
             .author("ctylim")
             .about("rhuffle")
-            .arg(
-                Arg::with_name("level")
-                    .short("l")
-                    .long("level")
-                    .value_name("hard|soft")
-                    .help("Sets shuffle level. (default: hard)")
-                    .takes_value(true),
-            )
             .arg(
                 Arg::with_name("log")
                     .long("log")
@@ -71,9 +61,6 @@ impl Config {
             .get_matches();
         let parse_failed =
             |a: &str, s: &str| format!("Parse failed in command argument {}: {}", a, s);
-        if let Some(shuffler) = matches.value_of("level") {
-            config.shuffler = shuffler.parse().expect(&parse_failed("shuffler", shuffler));
-        }
         if let Some(log_level) = matches.value_of("log") {
             config.log_level = log_level
                 .parse()
@@ -108,7 +95,6 @@ impl Config {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            shuffler: Default::default(),
             log_level: "off".to_string(),
             source: None,
             destination: None,

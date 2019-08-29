@@ -1,3 +1,2 @@
 pub mod exec;
-mod hard;
-mod soft;
+pub mod shuffle;

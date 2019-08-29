@@ -23,7 +23,7 @@ fn main() {
         Some(destination) => Rc::new(RefCell::new(io::writer(destination))),
         None => Rc::new(RefCell::new(BufWriter::new(stdout()))),
     };
-    config.shuffler.shuffle(
+    shuffler::shuffle::shuffle(
         &mut *reader.as_ref().borrow_mut(),
         &mut *writer.as_ref().borrow_mut(),
         &config,
