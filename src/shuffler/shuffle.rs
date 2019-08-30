@@ -3,8 +3,10 @@ use crate::io;
 use crate::io::*;
 use crate::shuffle::*;
 use rand::{thread_rng, Rng};
+use std::cell::RefCell;
 use std::fs::File;
-use std::io::{BufRead, BufReader, Write};
+use std::io::{stdin, stdout, BufRead, BufReader, BufWriter, Write};
+use std::rc::Rc;
 use tempfile::NamedTempFile;
 
 struct TmpFile {
@@ -12,14 +14,41 @@ struct TmpFile {
     file: NamedTempFile,
 }
 
-pub fn shuffle(reader: &mut BufRead, writer: &mut Write, conf: &Config) {
-    info!("tmp dir name: {:?}", std::env::temp_dir());
+pub fn shuffle(conf: &Config) {
+    let mut reader_dyn: Rc<RefCell<BufRead>> = match &conf.source {
+        Some(source) => Rc::new(RefCell::new(io::reader(&source.first().unwrap()))),
+        None => Rc::new(RefCell::new(BufReader::new(stdin()))),
+    };
+    let writer_dyn: Rc<RefCell<Write>> = match &conf.destination {
+        Some(destination) => Rc::new(RefCell::new(io::writer(destination))),
+        None => Rc::new(RefCell::new(BufWriter::new(stdout()))),
+    };
+
+    info!("tmp dir: {:?}", std::env::temp_dir());
     let mut tmp_files: Vec<TmpFile> = Vec::new();
     let mut total_rows: usize = 0;
+    let mut reader_ind: usize = 0;
     loop {
-        let (rows, size) = read_line_with_bytes(reader, conf.buffer_size);
-        if size == 0 {
-            break;
+        let (rows, size) =
+            read_line_with_bytes(&mut *reader_dyn.as_ref().borrow_mut(), conf.buffer_size);
+        match &conf.source {
+            Some(source) => {
+                if reader_ind >= source.len() {
+                    break;
+                }
+                if size == 0 {
+                    reader_ind += 1;
+                    if reader_ind < source.len() {
+                        reader_dyn = Rc::new(RefCell::new(io::reader(&source[reader_ind])));
+                    }
+                    continue;
+                }
+            }
+            None => {
+                if size == 0 {
+                    break;
+                }
+            }
         }
 
         let file = NamedTempFile::new().unwrap();
@@ -40,6 +69,7 @@ pub fn shuffle(reader: &mut BufRead, writer: &mut Write, conf: &Config) {
         tmp_file_readers.push(io::reader(tmp_file.file.path().to_str().unwrap()));
     }
     let mut rng = thread_rng();
+    let writer = &mut *writer_dyn.as_ref().borrow_mut();
     for i in 0..total_rows {
         let r: usize = rng.gen_range(0, total_rows - i) + 1;
         let mut current_rows = 0;

@@ -20,5 +20,5 @@ pub fn shuffle(reader: &mut BufRead, writer: &mut Write, conf: &Config) {
             }
         }
     }
-    shuffle::shuffle(reader, writer, &conf);
+    shuffle::shuffle(&conf);
 }

@@ -10,7 +10,7 @@
 $ cargo build --release
 ```
 
-## Usages
+## Usage
 
 ```
 USAGE:
@@ -29,8 +29,8 @@ OPTIONS:
 
     -h, --head <NUMBER>                            Sets first `n` lines without shuffling (default: 0).
         --log <off|error|warn|info|debug|trace>    Sets log level. (default: off)
-        --src <Option<PATH>>
-            Sets source file path. If not set, source sets to stdin. (default: None)
+        --src <Option<PATHS>>
+            Sets source file paths. If not set, source sets to stdin. (default: None)
 ```
 
 ## Benchmarks

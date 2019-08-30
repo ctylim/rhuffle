@@ -3,7 +3,7 @@ use clap::{App, Arg};
 #[derive(Debug)]
 pub struct Config {
     pub log_level: String,
-    pub source: Option<String>,
+    pub source: Option<Vec<String>>,
     pub destination: Option<String>,
     pub buffer_size: usize,
     pub head: usize,
@@ -31,9 +31,10 @@ impl Config {
             .arg(
                 Arg::with_name("src")
                     .long("src")
-                    .value_name("Option<PATH>")
-                    .help("Sets source file path. If not set, source sets to stdin. (default: None)")
-                    .takes_value(true),
+                    .value_name("Option<PATHS>")
+                    .help("Sets source file paths. If not set, source sets to stdin. (default: None)")
+                    .takes_value(true)
+                    .min_values(0),
             )
             .arg(
                 Arg::with_name("dst")
@@ -66,8 +67,8 @@ impl Config {
                 .parse()
                 .expect(&parse_failed("log_level", log_level));
         }
-        if let Some(source) = matches.value_of("src") {
-            config.source = Some(source.parse().expect(&parse_failed("source", source)));
+        if let Some(source) = matches.values_of("src") {
+            config.source = Some(source.map(|x| x.parse().unwrap()).collect());
         }
         if let Some(destination) = matches.value_of("dst") {
             config.destination = Some(
