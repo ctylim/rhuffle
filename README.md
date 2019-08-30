@@ -72,4 +72,42 @@ line1-1
  
 ## Benchmarks
 
-TBD
+The results shown below are focused on execution time in a limited memory space.
+Two datasets are used for testing.
+
+- [Kaggle competition dataset](https://www.kaggle.com/c/new-york-city-taxi-fare-prediction/data) (New York City Taxi Fare Prediction)
+- (self-owned) custom dataset
+
+Three softwares are used for performance comparison.
+
+- GNU shuf 
+    - command: `shuf {src} -o {dst}`
+- [terashuf](https://github.com/alexandres/terashuf) 
+    - command: `terashuf < {src} > {dst}`
+- rhuffle
+    - command: `rhuffle --src {src} --dst {dst}`
+
+Benchmarks are executed on MacBook Pro 2017, Core i7 3.1GHz, RAM 16GB.
+Execution time is measured by `time`.
+
+### Kaggle competition dataset
+
+5.3GB size, 55423856 lines
+
+|Software|real|user|sys|
+|---|---|---|---|
+|GNU shuf|0m59s|0m34s|0m14s|
+|terashuf|5m06s|4m43s|0m14s|
+|rhuffle|1m56s|1m06s|0m40s|
+
+### Custom dataset
+
+9.0GB size, 21550072 lines
+
+|Software|real|user|sys|
+|---|---|---|---|
+|GNU shuf|x|x|x|
+|terashuf|8m12s|7m16s|0m31s|
+|rhuffle|1m47s|0m39s|0m51s|
+
+GNU shuf was impossible to measure because of memory swapping.
