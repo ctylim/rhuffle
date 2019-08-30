@@ -56,7 +56,7 @@ impl Config {
                     .short("h")
                     .long("head")
                     .value_name("NUMBER")
-                    .help("Sets first `n` lines without shuffling (default: 0).")
+                    .help("Sets first `n` lines without shuffling (default: 0). For multiple input sources, take README a look.")
                     .takes_value(true),
             )
             .get_matches();

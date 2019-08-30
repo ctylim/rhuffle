@@ -1,3 +1,4 @@
+use super::head;
 use crate::config::Config;
 use crate::io;
 use crate::io::*;
@@ -23,6 +24,11 @@ pub fn shuffle(conf: &Config) {
         Some(destination) => Rc::new(RefCell::new(io::writer(destination))),
         None => Rc::new(RefCell::new(BufWriter::new(stdout()))),
     };
+    head::forward_head(
+        &mut *reader_dyn.as_ref().borrow_mut(),
+        &mut *writer_dyn.as_ref().borrow_mut(),
+        conf,
+    );
 
     info!("tmp dir: {:?}", std::env::temp_dir());
     let mut tmp_files: Vec<TmpFile> = Vec::new();
@@ -40,6 +46,7 @@ pub fn shuffle(conf: &Config) {
                     reader_ind += 1;
                     if reader_ind < source.len() {
                         reader_dyn = Rc::new(RefCell::new(io::reader(&source[reader_ind])));
+                        head::skip_head(&mut *reader_dyn.as_ref().borrow_mut(), conf);
                     }
                     continue;
                 }

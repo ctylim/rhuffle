@@ -27,12 +27,49 @@ OPTIONS:
         --dst <Option<PATH>>
             Sets destination file path. If not set, destination sets to stdout. (default: None)
 
-    -h, --head <NUMBER>                            Sets first `n` lines without shuffling (default: 0).
+    -h, --head <NUMBER>
+            Sets first `n` lines without shuffling (default: 0). For multiple input sources, please take README a look.
+
         --log <off|error|warn|info|debug|trace>    Sets log level. (default: off)
         --src <Option<PATHS>>
             Sets source file paths. If not set, source sets to stdin. (default: None)
 ```
 
+### `--head n` Option
+- For multiple input sources, first `n` lines in the first input source forwards to output source without shuffling.
+- For second input source and later, first `n` lines in the first input source are skipped.
+- Here is an example below:
+
+in1.txt
+```
+head1-1
+head2-1
+line1-1
+line2-1
+```
+
+in2.txt
+```
+head1-2
+head2-2
+line1-2
+line2-2
+```
+
+```
+$ ./rhuffle --src in1.txt in2.txt --dst out.txt --head 2
+```
+
+out.txt
+```
+head1-1 // L1-L2: fixed
+head2-1 
+line2-1 // L3-L6: shuffled globally
+line1-2
+line2-2
+line1-1
+```
+ 
 ## Benchmarks
 
 TBD
