@@ -110,4 +110,4 @@ Execution time is measured by `time`.
 |terashuf|8m12s|7m16s|0m31s|
 |rhuffle|1m47s|0m39s|0m51s|
 
-GNU shuf was impossible to measure because of memory swapping.
+GNU shuf was impossible to measure (very slow).
