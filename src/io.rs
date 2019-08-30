@@ -19,6 +19,9 @@ pub fn read_line_with_bytes(reader: &mut BufRead, bytes: usize) -> (Vec<String>,
         match reader.read_line(&mut buf) {
             Ok(0) => break,
             Ok(n) => {
+                if !buf.ends_with("\n") {
+                    buf += "\n";
+                }
                 current_size += n;
                 res.push(buf);
                 trace!(
