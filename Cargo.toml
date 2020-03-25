@@ -9,6 +9,7 @@ homepage = "https://github.com/ctylim/rhuffle"
 repository = "https://github.com/ctylim/rhuffle"
 keywords = ["cli"]
 license = "MIT"
+description = "Random shuffler for large file with many lines"
 
 [dependencies]
 rand = "0.7.0"
