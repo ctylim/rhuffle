@@ -16,11 +16,11 @@ struct TmpFile {
 }
 
 pub fn shuffle(conf: &Config) {
-    let mut reader_dyn: Rc<RefCell<BufRead>> = match &conf.source {
+    let mut reader_dyn: Rc<RefCell<dyn BufRead>> = match &conf.source {
         Some(source) => Rc::new(RefCell::new(io::reader(&source.first().unwrap()))),
         None => Rc::new(RefCell::new(BufReader::new(stdin()))),
     };
-    let writer_dyn: Rc<RefCell<Write>> = match &conf.destination {
+    let writer_dyn: Rc<RefCell<dyn Write>> = match &conf.destination {
         Some(destination) => Rc::new(RefCell::new(io::writer(destination))),
         None => Rc::new(RefCell::new(BufWriter::new(stdout()))),
     };

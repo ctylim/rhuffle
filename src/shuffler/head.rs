@@ -1,7 +1,7 @@
 use crate::config::Config;
 use std::io::{BufRead, Write};
 
-pub fn forward_head(reader: &mut BufRead, writer: &mut Write, conf: &Config) {
+pub fn forward_head(reader: &mut dyn BufRead, writer: &mut dyn Write, conf: &Config) {
     if conf.head > 0 {
         info!("forwarding head {} lines", conf.head);
     }
@@ -21,7 +21,7 @@ pub fn forward_head(reader: &mut BufRead, writer: &mut Write, conf: &Config) {
     }
 }
 
-pub fn skip_head(reader: &mut BufRead, conf: &Config) {
+pub fn skip_head(reader: &mut dyn BufRead, conf: &Config) {
     if conf.head > 0 {
         info!("skipping head {} lines", conf.head);
     }

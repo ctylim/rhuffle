@@ -11,7 +11,7 @@ pub fn reader(file_name: &str) -> BufReader<File> {
     BufReader::new(file)
 }
 
-pub fn read_line_with_bytes(reader: &mut BufRead, bytes: usize) -> (Vec<String>, usize) {
+pub fn read_line_with_bytes(reader: &mut dyn BufRead, bytes: usize) -> (Vec<String>, usize) {
     let mut current_size: usize = 0;
     let mut res: Vec<String> = Vec::new();
     while current_size <= bytes {
