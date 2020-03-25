@@ -4,6 +4,13 @@
 
 **rhuffle** is a random shuffler for large file with many lines which can exceed available RAM.
 
+## How to use as a CLI tool
+
+```
+$ cargo install rhuffle
+$ rhuffle --help
+```
+
 ## How to Build
 
 ```
