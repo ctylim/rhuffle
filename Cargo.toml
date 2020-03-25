@@ -1,9 +1,14 @@
 [package]
 name = "rhuffle"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["ctylim <lim.0.ctyl@gmail.com>"]
 build = "build.rs"
 edition = "2018"
+readme = "README.md"
+homepage = "https://github.com/ctylim/rhuffle"
+repository = "https://github.com/ctylim/rhuffle"
+keywords = ["cli"]
+license = "MIT"
 
 [dependencies]
 rand = "0.7.0"
