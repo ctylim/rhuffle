@@ -1,5 +1,6 @@
 # rhuffle
 
+[![crates.io](https://img.shields.io/crates/v/rhuffle.svg)](https://crates.io/crates/rhuffle)
 [![Build Status](https://travis-ci.org/ctylim/rhuffle.svg?branch=master)](https://travis-ci.org/ctylim/rhuffle)
 
 **rhuffle** is a random shuffler for large file with many lines which can exceed available RAM.
