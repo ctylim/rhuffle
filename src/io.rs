@@ -40,16 +40,16 @@ pub fn reader(file_name: &str) -> BufReader<File> {
 pub fn read_line_with_bytes(reader: &mut dyn BufRead, bytes: usize, feed: LineFeed) -> (Vec<String>, usize) {
     let mut current_size: usize = 0;
     let mut res: Vec<String> = Vec::new();
-    let mut line_buf = String::new();
     while current_size <= bytes {
         let mut buf = String::new();
         match read_line_with_linefeed(reader, &mut buf, feed) {
             Ok(0) => break,
             Ok(n) => {
+                if !buf.ends_with("\n") {
+                    buf += "\n";
+                }
                 current_size += n;
-                line_buf += &buf;
-                res.push(line_buf);
-                line_buf = String::new();
+                res.push(buf);
                 trace!(
                     "current bytes: {}, total bytes: {}, length: {}",
                     n,
@@ -92,4 +92,39 @@ pub fn read_line_with_linefeed(reader: &mut dyn BufRead, buf: &mut String, feed:
         }
     }
     return Ok(sz);
+}
+
+#[test]
+fn read_line_with_linefeed_test_1() {
+    let mut cursor = std::io::Cursor::new(b"lorem\nipsum\r\ndolor");
+    let (v, _) = read_line_with_bytes(&mut cursor, 1000, LineFeed::LF);
+    assert_eq!(v, ["lorem\n", "ipsum\r\ndolor\n"]);
+}
+
+#[test]
+fn read_line_with_linefeed_test_2() {
+    let mut cursor = std::io::Cursor::new(b"lorem\nipsum\r\ndolor");
+    let (v, _) = read_line_with_bytes(&mut cursor, 1000, LineFeed::LF_CRLF);
+    assert_eq!(v, ["lorem\n", "ipsum\r\n", "dolor\n"]);
+}
+
+#[test]
+fn read_line_with_linefeed_test_3() {
+    let mut cursor = std::io::Cursor::new(b"1\n2\n3-1\r\n3-2\r\n3-3\n4\n5\n6");
+    let (v, _) = read_line_with_bytes(&mut cursor, 1000, LineFeed::LF);
+    assert_eq!(v, ["1\n", "2\n", "3-1\r\n3-2\r\n3-3\n", "4\n", "5\n", "6\n"]);
+}
+
+#[test]
+fn read_line_with_linefeed_test_4() {
+    let mut cursor = std::io::Cursor::new(b"1\n2\n3-1\r\n3-2\r\n3-3\n4\n5\n6\n");
+    let (v, _) = read_line_with_bytes(&mut cursor, 1000, LineFeed::LF_CRLF);
+    assert_eq!(v, ["1\n", "2\n", "3-1\r\n", "3-2\r\n", "3-3\n", "4\n", "5\n", "6\n"]);
+}
+
+#[test]
+fn read_line_with_linefeed_test_5() {
+    let mut cursor = std::io::Cursor::new(b"1\n2\n3-1\r\n3-2\r3-3\n4\n5\n6\n");
+    let (v, _) = read_line_with_bytes(&mut cursor, 1000, LineFeed::LF_CRLF);
+    assert_eq!(v, ["1\n", "2\n", "3-1\r\n", "3-2\r3-3\n", "4\n", "5\n", "6\n"]);
 }
