@@ -35,8 +35,7 @@ pub fn shuffle(conf: &Config) {
     let mut total_rows: usize = 0;
     let mut reader_ind: usize = 0;
     loop {
-        let (rows, size) =
-            read_line_with_bytes(&mut *reader_dyn.as_ref().borrow_mut(), conf.buffer_size);
+        let (rows, size) = read_line_with_bytes(&mut *reader_dyn.as_ref().borrow_mut(), conf.buffer_size, conf.feed);
         match &conf.source {
             Some(source) => {
                 if reader_ind >= source.len() {
@@ -85,7 +84,8 @@ pub fn shuffle(conf: &Config) {
             if r <= current_rows {
                 tmp_files[j].remaining_row_count -= 1;
                 let mut buf = String::new();
-                let size = tmp_file_readers[j].read_line(&mut buf).unwrap();
+                let size =
+                    io::read_line_with_linefeed(&mut tmp_file_readers[j], &mut buf, conf.feed).expect("readline err");
                 if size == 0 {
                     panic!("invalid EOF detected while reading tmp file!");
                 }

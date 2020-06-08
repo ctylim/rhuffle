@@ -1,3 +1,4 @@
+use crate::io::LineFeed;
 use clap::{App, Arg};
 
 #[derive(Debug)]
@@ -7,6 +8,7 @@ pub struct Config {
     pub destination: Option<String>,
     pub buffer_size: usize,
     pub head: usize,
+    pub feed: LineFeed,
 }
 
 impl Config {
@@ -59,31 +61,32 @@ impl Config {
                     .help("Sets first `n` lines without shuffling (default: 0). For multiple input sources, take README a look.")
                     .takes_value(true),
             )
+            .arg(
+                Arg::with_name("feed")
+                    .long("feed")
+                    .value_name("LF|LF_CRLF")
+                    .help("Sets line feed (default: LF).")
+                    .takes_value(true),
+            )
             .get_matches();
-        let parse_failed =
-            |a: &str, s: &str| format!("Parse failed in command argument {}: {}", a, s);
+        let parse_failed = |a: &str, s: &str| format!("Parse failed in command argument {}: {}", a, s);
         if let Some(log_level) = matches.value_of("log") {
-            config.log_level = log_level
-                .parse()
-                .expect(&parse_failed("log_level", log_level));
+            config.log_level = log_level.parse().expect(&parse_failed("log_level", log_level));
         }
         if let Some(source) = matches.values_of("src") {
             config.source = Some(source.map(|x| x.parse().unwrap()).collect());
         }
         if let Some(destination) = matches.value_of("dst") {
-            config.destination = Some(
-                destination
-                    .parse()
-                    .expect(&parse_failed("destination", destination)),
-            );
+            config.destination = Some(destination.parse().expect(&parse_failed("destination", destination)));
         }
         if let Some(buffer_size) = matches.value_of("buffer") {
-            config.buffer_size = buffer_size
-                .parse()
-                .expect(&parse_failed("buffer_size", buffer_size));
+            config.buffer_size = buffer_size.parse().expect(&parse_failed("buffer_size", buffer_size));
         }
         if let Some(head) = matches.value_of("head") {
             config.head = head.parse().expect(&parse_failed("head", head));
+        }
+        if let Some(feed) = matches.value_of("feed") {
+            config.feed = feed.parse().expect(&parse_failed("feed", feed));
         }
         config
     }
@@ -101,6 +104,7 @@ impl Default for Config {
             destination: None,
             buffer_size: 4294967296,
             head: 0,
+            feed: LineFeed::LF,
         }
     }
 }
