@@ -65,7 +65,7 @@ impl Config {
                 Arg::with_name("feed")
                     .long("feed")
                     .value_name("LF|LF_CRLF")
-                    .help("Sets line feed (default: LF).")
+                    .help("Sets acceptable line feed as EOL (default: LF_CRLF).")
                     .takes_value(true),
             )
             .get_matches();
@@ -102,9 +102,9 @@ impl Default for Config {
             log_level: "off".to_string(),
             source: None,
             destination: None,
-            buffer_size: 4294967296,
+            buffer_size: 4 * 1024 * 1024 * 1024,
             head: 0,
-            feed: LineFeed::LF,
+            feed: LineFeed::LF_CRLF,
         }
     }
 }
