@@ -35,8 +35,9 @@ OPTIONS:
         --dst <Option<PATH>>
             Sets destination file path. If not set, destination sets to stdout. (default: None)
 
+        --feed <LF|LF_CRLF>                        Sets acceptable line feed as EOL (default: LF_CRLF).
     -h, --head <NUMBER>
-            Sets first `n` lines without shuffling (default: 0). For multiple input sources, please take README a look.
+            Sets first `n` lines without shuffling (default: 0). For multiple input sources, take README a look.
 
         --log <off|error|warn|info|debug|trace>    Sets log level. (default: off)
         --src <Option<PATHS>>
@@ -77,6 +78,11 @@ line1-2
 line2-2
 line1-1
 ```
+
+### `--feed` Option
+- LF_CRLF(default): accepts LF or CRLF as newline
+- LF: accepts only LF as newline
+- No option for CR
  
 ## Benchmarks
 
