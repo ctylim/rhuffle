@@ -5,6 +5,12 @@
 
 **rhuffle** is a random shuffler for large file with many lines which can exceed available RAM.
 
+**rhuffle** supports:
+- shuffling huge files which does not fit in memory
+- skipping head lines which should not include for shuffling (e.g. csv/tsv)
+- multiple file input and flexible input formats
+- rhuffle works very fast (see [benchmark results](#benchmarks).)
+
 ## How to use as a CLI tool
 
 ```
