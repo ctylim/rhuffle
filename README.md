@@ -11,18 +11,9 @@
 - multiple file input and flexible input formats
 - rhuffle works very fast (see [benchmark results](#benchmarks).)
 
-## How to use as a CLI tool
+## Installation
 
-```
-$ cargo install rhuffle
-$ rhuffle --help
-```
-
-## How to Build
-
-```
-$ cargo build --release
-```
+See [lib.rs](https://lib.rs/install/rhuffle).
 
 ## Usage
 
