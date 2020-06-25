@@ -65,7 +65,7 @@ line2-2
 ```
 
 ```
-$ ./rhuffle --src in1.txt in2.txt --dst out.txt --head 2
+$ rhuffle --src in1.txt in2.txt --dst out.txt --head 2
 ```
 
 out.txt
