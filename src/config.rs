@@ -33,15 +33,15 @@ impl Config {
             .arg(
                 Arg::with_name("src")
                     .long("src")
-                    .value_name("Option<PATHS>")
-                    .help("Sets source file paths. If not set, source sets to stdin. (default: None)")
+                    .value_name("[PATH]")
+                    .help("Sets source file paths (space separated). If not set, source sets to stdin. (default: None)")
                     .takes_value(true)
                     .min_values(0),
             )
             .arg(
                 Arg::with_name("dst")
                     .long("dst")
-                    .value_name("Option<PATH>")
+                    .value_name("PATH")
                     .help("Sets destination file path. If not set, destination sets to stdout. (default: None)")
                     .takes_value(true),
             )

@@ -29,7 +29,7 @@ OPTIONS:
     -b, --buf <NUMBER>
             Sets buffer size which is smaller than available RAM with bytes (default: 4294967296).
 
-        --dst <Option<PATH>>
+        --dst <PATH>
             Sets destination file path. If not set, destination sets to stdout. (default: None)
 
         --feed <LF|LF_CRLF>                        Sets acceptable line feed as EOL (default: LF_CRLF).
@@ -37,8 +37,8 @@ OPTIONS:
             Sets first `n` lines without shuffling (default: 0). For multiple input sources, take README a look.
 
         --log <off|error|warn|info|debug|trace>    Sets log level. (default: off)
-        --src <Option<PATHS>>
-            Sets source file paths. If not set, source sets to stdin. (default: None)
+        --src <[PATH]>
+            Sets source file paths (space separated). If not set, source sets to stdin. (default: None)
 ```
 
 ### `--head n` Option
