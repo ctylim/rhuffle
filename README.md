@@ -11,6 +11,8 @@
 - multiple file input and flexible input formats
 - rhuffle works very fast (see [benchmark results](#benchmarks).)
 
+![rhuffle_demo](rhuffle_demo.gif)
+
 ## Installation
 
 See [lib.rs](https://lib.rs/install/rhuffle).
