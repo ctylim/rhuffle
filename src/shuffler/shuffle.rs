@@ -94,5 +94,9 @@ pub fn shuffle(conf: &Config) {
             }
         }
     }
+    for tmpfile in tmp_files {
+        info!("closing {} ...", tmpfile.file.path().to_str().unwrap());
+        tmpfile.file.close().expect("close failed");
+    }
     info!("finished writing to destination file");
 }
