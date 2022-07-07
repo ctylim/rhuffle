@@ -9,6 +9,7 @@ pub struct Config {
     pub buffer_size: usize,
     pub head: usize,
     pub feed: LineFeed,
+    pub tmp: Option<String>,
 }
 
 impl Config {
@@ -68,6 +69,13 @@ impl Config {
                     .help("Sets acceptable line feed as EOL (default: LF_CRLF).")
                     .takes_value(true),
             )
+            .arg(
+                Arg::with_name("tmp")
+                    .long("tmp")
+                    .value_name("PATH")
+                    .help("Sets temporary file directory. (default: Temporary directory set by the system.)")
+                    .takes_value(true),
+            )
             .get_matches();
         let parse_failed = |a: &str, s: &str| format!("Parse failed in command argument {}: {}", a, s);
         if let Some(log_level) = matches.value_of("log") {
@@ -88,6 +96,9 @@ impl Config {
         if let Some(feed) = matches.value_of("feed") {
             config.feed = feed.parse().expect(&parse_failed("feed", feed));
         }
+        if let Some(tmp) = matches.value_of("tmp"){
+            config.tmp = Some(tmp.parse().expect(&parse_failed("tmp", tmp)));
+        }
         config
     }
 
@@ -105,6 +116,7 @@ impl Default for Config {
             buffer_size: 4 * 1024 * 1024 * 1024,
             head: 0,
             feed: LineFeed::LF_CRLF,
+            tmp: Some(std::env::temp_dir().to_string_lossy().into_owned()),
         }
     }
 }
