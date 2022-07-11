@@ -56,12 +56,12 @@ pub fn shuffle(conf: &Config) {
             }
         }
 
-        let file = if let Some(tmp) = &conf.tmp{
+        let file = if let Some(tmp) = &conf.tmp {
             NamedTempFile::new_in(tmp).unwrap()
-        }else{
+        } else {
             NamedTempFile::new().unwrap()
         };
-        info!("{:?}",file.path().to_str());
+        info!("{:?}", file.path().to_str());
         let shuf: Vec<usize> = fisher_yates_shuffle_n(rows.len());
         let mut tmp_writer = io::writer(file.path().to_str().unwrap());
         for i in shuf {

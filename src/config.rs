@@ -96,7 +96,7 @@ impl Config {
         if let Some(feed) = matches.value_of("feed") {
             config.feed = feed.parse().expect(&parse_failed("feed", feed));
         }
-        if let Some(tmp) = matches.value_of("tmp"){
+        if let Some(tmp) = matches.value_of("tmp") {
             config.tmp = Some(tmp.parse().expect(&parse_failed("tmp", tmp)));
         }
         config
