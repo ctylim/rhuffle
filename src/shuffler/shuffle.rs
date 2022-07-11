@@ -30,7 +30,6 @@ pub fn shuffle(conf: &Config) {
         conf,
     );
 
-    info!("tmp dir: {:?}", std::env::temp_dir());
     let mut tmp_files: Vec<TmpFile> = Vec::new();
     let mut total_rows: usize = 0;
     let mut reader_ind: usize = 0;
@@ -57,7 +56,12 @@ pub fn shuffle(conf: &Config) {
             }
         }
 
-        let file = NamedTempFile::new().unwrap();
+        let file = if let Some(tmp) = &conf.tmp {
+            NamedTempFile::new_in(tmp).unwrap()
+        } else {
+            NamedTempFile::new().unwrap()
+        };
+        info!("{:?}", file.path().to_str());
         let shuf: Vec<usize> = fisher_yates_shuffle_n(rows.len());
         let mut tmp_writer = io::writer(file.path().to_str().unwrap());
         for i in shuf {
