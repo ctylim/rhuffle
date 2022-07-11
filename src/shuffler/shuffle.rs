@@ -30,7 +30,6 @@ pub fn shuffle(conf: &Config) {
         conf,
     );
 
-    info!("tmp dir: {:?}", conf.tmp);
     let mut tmp_files: Vec<TmpFile> = Vec::new();
     let mut total_rows: usize = 0;
     let mut reader_ind: usize = 0;
@@ -57,19 +56,22 @@ pub fn shuffle(conf: &Config) {
             }
         }
 
-        if let Some(tmp) = &conf.tmp {
-            let file = NamedTempFile::new_in(tmp).unwrap();
-            let shuf: Vec<usize> = fisher_yates_shuffle_n(rows.len());
-            let mut tmp_writer = io::writer(file.path().to_str().unwrap());
-            for i in shuf {
-                tmp_writer.write(format!("{}", rows[i]).as_bytes()).unwrap();
-            }
-            tmp_files.push(TmpFile {
-                remaining_row_count: rows.len(),
-                file: file,
-            });
-            total_rows += rows.len();
+        let file = if let Some(tmp) = &conf.tmp{
+            NamedTempFile::new_in(tmp).unwrap()
+        }else{
+            NamedTempFile::new().unwrap()
+        };
+        info!("{:?}",file.path().to_str());
+        let shuf: Vec<usize> = fisher_yates_shuffle_n(rows.len());
+        let mut tmp_writer = io::writer(file.path().to_str().unwrap());
+        for i in shuf {
+            tmp_writer.write(format!("{}", rows[i]).as_bytes()).unwrap();
         }
+        tmp_files.push(TmpFile {
+            remaining_row_count: rows.len(),
+            file: file,
+        });
+        total_rows += rows.len();
     }
     info!("finished writing to tmp files, count: {}", tmp_files.len());
     let mut tmp_file_readers: Vec<BufReader<File>> = Vec::with_capacity(tmp_files.len());

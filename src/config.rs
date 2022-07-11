@@ -116,7 +116,7 @@ impl Default for Config {
             buffer_size: 4 * 1024 * 1024 * 1024,
             head: 0,
             feed: LineFeed::LF_CRLF,
-            tmp: Some(std::env::temp_dir().to_string_lossy().into_owned()),
+            tmp: None,
         }
     }
 }
