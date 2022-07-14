@@ -1,6 +1,6 @@
 [package]
 name = "rhuffle"
-version = "0.3.2"
+version = "0.3.3"
 authors = ["ctylim <lim.0.ctyl@gmail.com>"]
 build = "build.rs"
 edition = "2018"
