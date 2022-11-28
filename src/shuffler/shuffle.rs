@@ -65,7 +65,7 @@ pub fn shuffle(conf: &Config) {
         let shuf: Vec<usize> = fisher_yates_shuffle_n(rows.len());
         let mut tmp_writer = io::writer(file.path().to_str().unwrap());
         for i in shuf {
-            tmp_writer.write(format!("{}", rows[i]).as_bytes()).unwrap();
+            tmp_writer.write_all(format!("{}", rows[i]).as_bytes()).unwrap();
         }
         tmp_files.push(TmpFile {
             remaining_row_count: rows.len(),
@@ -93,7 +93,7 @@ pub fn shuffle(conf: &Config) {
                 if size == 0 {
                     panic!("invalid EOF detected while reading tmp file!");
                 }
-                writer.write(format!("{}", buf).as_bytes()).unwrap();
+                writer.write_all(format!("{}", buf).as_bytes()).unwrap();
                 break;
             }
         }
