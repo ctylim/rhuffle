@@ -12,7 +12,7 @@ pub fn forward_head(reader: &mut dyn BufRead, writer: &mut dyn Write, conf: &Con
                 panic!("EOF detected while reading head {}-th line", i);
             }
             Ok(_) => {
-                writer.write(format!("{}", buf).as_bytes()).unwrap();
+                writer.write_all(buf.as_bytes()).unwrap();
             }
             Err(e) => {
                 panic!("An error occurred while reading line: {}", e);
