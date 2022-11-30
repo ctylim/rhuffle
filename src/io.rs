@@ -4,7 +4,7 @@ use std::io::{BufRead, BufReader, BufWriter};
 use std::str::FromStr;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum LineFeed {
     LF,
     LF_CRLF,
@@ -20,15 +20,15 @@ impl FromStr for LineFeed {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "LF" => return Result::Ok(LineFeed::LF),
-            "LF_CRLF" => return Result::Ok(LineFeed::LF_CRLF),
+            "LF" => Result::Ok(LineFeed::LF),
+            "LF_CRLF" => Result::Ok(LineFeed::LF_CRLF),
             _ => Err(()),
         }
     }
 }
 
 pub fn reader(file_name: &str) -> BufReader<File> {
-    let file = match File::open(&file_name) {
+    let file = match File::open(file_name) {
         Ok(file) => file,
         Err(e) => {
             panic!("An error occurred while opening file {}: {}", file_name, e);
@@ -45,7 +45,7 @@ pub fn read_line_with_bytes(reader: &mut dyn BufRead, bytes: usize, feed: LineFe
         match read_line_with_linefeed(reader, &mut buf, feed) {
             Ok(0) => break,
             Ok(n) => {
-                if !buf.ends_with("\n") {
+                if !buf.ends_with('\n') {
                     buf += "\n";
                 }
                 current_size += n;
@@ -66,7 +66,7 @@ pub fn read_line_with_bytes(reader: &mut dyn BufRead, bytes: usize, feed: LineFe
 }
 
 pub fn writer(file_name: &str) -> BufWriter<File> {
-    let file = match File::create(&file_name) {
+    let file = match File::create(file_name) {
         Ok(file) => file,
         Err(e) => {
             panic!("An error occurred while creating file {}: {}", file_name, e);
@@ -75,7 +75,7 @@ pub fn writer(file_name: &str) -> BufWriter<File> {
     BufWriter::new(file)
 }
 
-pub fn read_line_with_linefeed(reader: &mut dyn BufRead, buf: &mut String, feed: LineFeed) -> std::io::Result<usize> {
+pub fn read_line_with_linefeed(reader: &mut dyn BufRead, buf: &mut String, feed: LineFeed) -> std::result::Result<usize, std::io::Error> {
     let mut sz = 0;
     loop {
         let mut tbuf = String::new();
@@ -91,7 +91,7 @@ pub fn read_line_with_linefeed(reader: &mut dyn BufRead, buf: &mut String, feed:
             Err(e) => return Err(e),
         }
     }
-    return Ok(sz);
+    Ok(sz)
 }
 
 #[test]

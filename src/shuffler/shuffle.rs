@@ -17,7 +17,7 @@ struct TmpFile {
 
 pub fn shuffle(conf: &Config) {
     let mut reader_dyn: Rc<RefCell<dyn BufRead>> = match &conf.source {
-        Some(source) => Rc::new(RefCell::new(io::reader(&source.first().unwrap()))),
+        Some(source) => Rc::new(RefCell::new(io::reader(source.first().unwrap()))),
         None => Rc::new(RefCell::new(BufReader::new(stdin()))),
     };
     let writer_dyn: Rc<RefCell<dyn Write>> = match &conf.destination {
@@ -69,7 +69,7 @@ pub fn shuffle(conf: &Config) {
         }
         tmp_files.push(TmpFile {
             remaining_row_count: rows.len(),
-            file: file,
+            file,
         });
         total_rows += rows.len();
     }
