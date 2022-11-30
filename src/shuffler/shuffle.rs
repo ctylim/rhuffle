@@ -4,10 +4,8 @@ use crate::io;
 use crate::io::*;
 use crate::shuffle::*;
 use rand::{thread_rng, Rng};
-use std::cell::RefCell;
 use std::fs::File;
 use std::io::{stdin, stdout, BufRead, BufReader, BufWriter, Write};
-use std::rc::Rc;
 use tempfile::NamedTempFile;
 
 struct TmpFile {
@@ -16,17 +14,17 @@ struct TmpFile {
 }
 
 pub fn shuffle(conf: &Config) {
-    let mut reader_dyn: Rc<RefCell<dyn BufRead>> = match &conf.source {
-        Some(source) => Rc::new(RefCell::new(io::reader(source.first().unwrap()))),
-        None => Rc::new(RefCell::new(BufReader::new(stdin()))),
+    let mut reader_dyn: Box<dyn BufRead> = match &conf.source {
+        Some(source) => Box::new(io::reader(source.first().unwrap())),
+        None => Box::new(BufReader::new(stdin())),
     };
-    let writer_dyn: Rc<RefCell<dyn Write>> = match &conf.destination {
-        Some(destination) => Rc::new(RefCell::new(io::writer(destination))),
-        None => Rc::new(RefCell::new(BufWriter::new(stdout()))),
+    let mut writer_dyn: Box<dyn Write> = match &conf.destination {
+        Some(destination) => Box::new(io::writer(destination)),
+        None => Box::new(BufWriter::new(stdout())),
     };
     head::forward_head(
-        &mut *reader_dyn.as_ref().borrow_mut(),
-        &mut *writer_dyn.as_ref().borrow_mut(),
+        &mut reader_dyn,
+        &mut writer_dyn,
         conf,
     );
 
@@ -34,7 +32,7 @@ pub fn shuffle(conf: &Config) {
     let mut total_rows: usize = 0;
     let mut reader_ind: usize = 0;
     loop {
-        let (rows, size) = read_line_with_bytes(&mut *reader_dyn.as_ref().borrow_mut(), conf.buffer_size, conf.feed);
+        let (rows, size) = read_line_with_bytes(&mut reader_dyn, conf.buffer_size, conf.feed);
         match &conf.source {
             Some(source) => {
                 if reader_ind >= source.len() {
@@ -43,8 +41,8 @@ pub fn shuffle(conf: &Config) {
                 if size == 0 {
                     reader_ind += 1;
                     if reader_ind < source.len() {
-                        reader_dyn = Rc::new(RefCell::new(io::reader(&source[reader_ind])));
-                        head::skip_head(&mut *reader_dyn.as_ref().borrow_mut(), conf);
+                        reader_dyn = Box::new(io::reader(&source[reader_ind]));
+                        head::skip_head(&mut reader_dyn, conf);
                     }
                     continue;
                 }
@@ -79,7 +77,7 @@ pub fn shuffle(conf: &Config) {
         tmp_file_readers.push(io::reader(tmp_file.file.path().to_str().unwrap()));
     }
     let mut rng = thread_rng();
-    let writer = &mut *writer_dyn.as_ref().borrow_mut();
+    let writer = &mut writer_dyn;
     for i in 0..total_rows {
         let r: usize = rng.gen_range(0, total_rows - i) + 1;
         let mut current_rows = 0;
