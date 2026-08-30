@@ -7,6 +7,7 @@ pub struct Config {
     pub source: Option<Vec<String>>,
     pub destination: Option<String>,
     pub buffer_size: usize,
+    pub io_buffer_size: usize,
     pub head: usize,
     pub feed: LineFeed,
     pub tmp: Option<String>,
@@ -55,6 +56,13 @@ impl Config {
                     .takes_value(true),
             )
             .arg(
+                Arg::with_name("io_buffer")
+                    .long("io-buf")
+                    .value_name("NUMBER")
+                    .help("Sets the read/write buffer size of each file stream with bytes (default: 1048576). Raise it on high-latency storage such as SAN, NFS or SMB mounts; it is allocated once per open temporary file.")
+                    .takes_value(true),
+            )
+            .arg(
                 Arg::with_name("head")
                     .short("h")
                     .long("head")
@@ -90,6 +98,9 @@ impl Config {
         if let Some(buffer_size) = matches.value_of("buffer") {
             config.buffer_size = buffer_size.parse().expect(&parse_failed("buffer_size", buffer_size));
         }
+        if let Some(io_buffer_size) = matches.value_of("io_buffer") {
+            config.io_buffer_size = io_buffer_size.parse().expect(&parse_failed("io_buffer_size", io_buffer_size));
+        }
         if let Some(head) = matches.value_of("head") {
             config.head = head.parse().expect(&parse_failed("head", head));
         }
@@ -114,6 +125,7 @@ impl Default for Config {
             source: None,
             destination: None,
             buffer_size: 4 * 1024 * 1024 * 1024,
+            io_buffer_size: crate::io::DEFAULT_IO_BUFFER_SIZE,
             head: 0,
             feed: LineFeed::LF_CRLF,
             tmp: None,
