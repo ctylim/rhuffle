@@ -4,16 +4,11 @@ use std::io::{BufRead, BufReader, BufWriter};
 use std::str::FromStr;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Default)]
 pub enum LineFeed {
+    #[default]
     LF,
     LF_CRLF,
-}
-
-impl Default for LineFeed {
-    fn default() -> Self {
-        LineFeed::LF
-    }
 }
 
 impl FromStr for LineFeed {
@@ -75,7 +70,11 @@ pub fn writer(file_name: &str) -> BufWriter<File> {
     BufWriter::new(file)
 }
 
-pub fn read_line_with_linefeed(reader: &mut dyn BufRead, buf: &mut String, feed: LineFeed) -> std::result::Result<usize, std::io::Error> {
+pub fn read_line_with_linefeed(
+    reader: &mut dyn BufRead,
+    buf: &mut String,
+    feed: LineFeed,
+) -> std::result::Result<usize, std::io::Error> {
     let mut sz = 0;
     loop {
         let mut tbuf = String::new();

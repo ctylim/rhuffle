@@ -1,4 +1,4 @@
-use rand::{thread_rng, Rng};
+use rand::RngExt;
 
 pub fn fisher_yates_shuffle_n(n: usize) -> Vec<usize> {
     info!("shuffling array with length {}", n);
@@ -6,10 +6,9 @@ pub fn fisher_yates_shuffle_n(n: usize) -> Vec<usize> {
     for i in 0..n {
         v.push(i);
     }
-    let mut rng = thread_rng();
+    let mut rng = rand::rng();
     for i in (1..n).rev() {
-        let r: usize = rng.gen();
-        v.swap(i, r % (i + 1));
+        v.swap(i, rng.random_range(0..i + 1));
     }
     v
 }
