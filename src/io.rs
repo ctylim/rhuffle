@@ -22,14 +22,21 @@ impl FromStr for LineFeed {
     }
 }
 
-pub fn reader(file_name: &str) -> BufReader<File> {
+/// Capacity of every `BufReader`/`BufWriter` wrapping a file or a std stream.
+///
+/// std defaults to 8 KiB, which turns a 100 GB shuffle into ~49M queue-depth-1
+/// requests. That is invisible on a local SSD but latency-bound on network or
+/// SAN storage, so the default is raised and made tunable via `--io-buf`.
+pub const DEFAULT_IO_BUFFER_SIZE: usize = 1024 * 1024;
+
+pub fn reader(file_name: &str, capacity: usize) -> BufReader<File> {
     let file = match File::open(file_name) {
         Ok(file) => file,
         Err(e) => {
             panic!("An error occurred while opening file {}: {}", file_name, e);
         }
     };
-    BufReader::new(file)
+    BufReader::with_capacity(capacity, file)
 }
 
 pub fn read_line_with_bytes(reader: &mut dyn BufRead, bytes: usize, feed: LineFeed) -> (Vec<String>, usize) {
@@ -60,14 +67,14 @@ pub fn read_line_with_bytes(reader: &mut dyn BufRead, bytes: usize, feed: LineFe
     (res, current_size)
 }
 
-pub fn writer(file_name: &str) -> BufWriter<File> {
+pub fn writer(file_name: &str, capacity: usize) -> BufWriter<File> {
     let file = match File::create(file_name) {
         Ok(file) => file,
         Err(e) => {
             panic!("An error occurred while creating file {}: {}", file_name, e);
         }
     };
-    BufWriter::new(file)
+    BufWriter::with_capacity(capacity, file)
 }
 
 pub fn read_line_with_linefeed(

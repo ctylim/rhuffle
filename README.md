@@ -38,9 +38,41 @@ OPTIONS:
     -h, --head <NUMBER>
             Sets first `n` lines without shuffling (default: 0). For multiple input sources, take README a look.
 
+        --io-buf <NUMBER>
+            Sets the read/write buffer size of each file stream with bytes (default: 1048576). Raise it on high-latency
+            storage such as SAN, NFS or SMB mounts; it is allocated once per open temporary file.
         --log <off|error|warn|info|debug|trace>    Sets log level. (default: off)
         --src <[PATH]>
             Sets source file paths (space separated). If not set, source sets to stdin. (default: None)
+
+        --tmp <PATH>
+            Sets temporary file directory. (default: Temporary directory set by the system.)
+```
+
+### `--io-buf n` Option on high-latency storage
+
+rhuffle works in two phases: it splits the input into `--buf` sized chunks, shuffles
+each in RAM and spills it to a temporary file, then merges by repeatedly drawing a
+line from a randomly chosen temporary file. A 100 GB input therefore moves roughly
+400 GB in total (read source, write temporaries, read temporaries, write destination).
+
+That I/O is sequential per file handle, but it is issued synchronously at queue depth
+one. With the previous 8 KiB buffers a 100 GB shuffle needed about 49 million requests,
+which a local SSD absorbs through the page cache but which becomes latency-bound on a
+SAN, NFS or SMB mount, where every cache miss costs a network round trip.
+
+On such storage:
+
+- Point `--tmp` at a **local** disk if you can. The merge phase is the expensive one,
+  and keeping it off the network removes half of the total traffic.
+- Raise `--io-buf` (16 MiB is a reasonable starting point). It is allocated once per
+  open temporary file, so the merge phase holds `io-buf * ceil(input / buf)` bytes.
+- Raise `--buf` as well. Fewer, larger chunks mean fewer temporary files interleaved
+  during the merge, which keeps the access pattern closer to sequential. Budget around
+  1.5x the value in RAM, since each line is stored as a separate allocation.
+
+```
+rhuffle --src big.txt --dst out.txt --tmp /local/scratch -b 17179869184 --io-buf 16777216
 ```
 
 ### `--head n` Option
