@@ -4,6 +4,7 @@ version = "0.3.3"
 authors = ["ctylim <lim.0.ctyl@gmail.com>"]
 build = "build.rs"
 edition = "2018"
+rust-version = "1.85"
 readme = "README.md"
 repository = "https://github.com/ctylim/rhuffle"
 keywords = ["cli", "shuffle"]
