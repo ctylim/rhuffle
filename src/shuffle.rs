@@ -8,7 +8,7 @@ pub fn fisher_yates_shuffle_n(n: usize) -> Vec<usize> {
     }
     let mut rng = thread_rng();
     for i in (1..n).rev() {
-        let r: usize = rng.gen();
+        let r: usize = rng.r#gen();
         v.swap(i, r % (i + 1));
     }
     v

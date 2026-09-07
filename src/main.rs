@@ -9,8 +9,7 @@ use crate::config::Config;
 
 fn main() {
     let config = Config::new();
-    std::env::set_var("RUST_LOG", &config.log_level);
-    env_logger::init();
+    env_logger::Builder::new().parse_filters(&config.log_level).init();
     config.show();
     shuffler::shuffle::shuffle(&config);
 }
