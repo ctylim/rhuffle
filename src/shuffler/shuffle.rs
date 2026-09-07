@@ -3,9 +3,9 @@ use crate::config::Config;
 use crate::io;
 use crate::io::*;
 use crate::shuffle::*;
-use rand::{thread_rng, Rng};
+use rand::{Rng, thread_rng};
 use std::fs::File;
-use std::io::{stdin, stdout, BufRead, BufReader, BufWriter, Write};
+use std::io::{BufRead, BufReader, BufWriter, Write, stdin, stdout};
 use tempfile::NamedTempFile;
 
 struct TmpFile {
@@ -22,11 +22,7 @@ pub fn shuffle(conf: &Config) {
         Some(destination) => Box::new(io::writer(destination)),
         None => Box::new(BufWriter::new(stdout())),
     };
-    head::forward_head(
-        &mut reader_dyn,
-        &mut writer_dyn,
-        conf,
-    );
+    head::forward_head(&mut reader_dyn, &mut writer_dyn, conf);
 
     let mut tmp_files: Vec<TmpFile> = Vec::new();
     let mut total_rows: usize = 0;

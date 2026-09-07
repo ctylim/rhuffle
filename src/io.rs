@@ -75,7 +75,11 @@ pub fn writer(file_name: &str) -> BufWriter<File> {
     BufWriter::new(file)
 }
 
-pub fn read_line_with_linefeed(reader: &mut dyn BufRead, buf: &mut String, feed: LineFeed) -> std::result::Result<usize, std::io::Error> {
+pub fn read_line_with_linefeed(
+    reader: &mut dyn BufRead,
+    buf: &mut String,
+    feed: LineFeed,
+) -> std::result::Result<usize, std::io::Error> {
     let mut sz = 0;
     loop {
         let mut tbuf = String::new();

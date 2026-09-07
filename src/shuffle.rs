@@ -1,4 +1,4 @@
-use rand::{thread_rng, Rng};
+use rand::{Rng, thread_rng};
 
 pub fn fisher_yates_shuffle_n(n: usize) -> Vec<usize> {
     info!("shuffling array with length {}", n);
