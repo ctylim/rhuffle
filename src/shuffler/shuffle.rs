@@ -3,7 +3,7 @@ use crate::config::Config;
 use crate::io;
 use crate::io::*;
 use crate::shuffle::*;
-use rand::{Rng, thread_rng};
+use rand::RngExt;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write, stdin, stdout};
 use tempfile::NamedTempFile;
@@ -72,10 +72,10 @@ pub fn shuffle(conf: &Config) {
     for tmp_file in tmp_files.iter() {
         tmp_file_readers.push(io::reader(tmp_file.file.path().to_str().unwrap()));
     }
-    let mut rng = thread_rng();
+    let mut rng = rand::rng();
     let writer = &mut writer_dyn;
     for i in 0..total_rows {
-        let r: usize = rng.gen_range(0, total_rows - i) + 1;
+        let r: usize = rng.random_range(0..total_rows - i) + 1;
         let mut current_rows = 0;
         for j in 0..tmp_files.len() {
             current_rows += tmp_files[j].remaining_row_count;
