@@ -4,14 +4,12 @@ use std::io::{BufRead, BufReader, BufWriter};
 use std::str::FromStr;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
-#[derive(Default)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Default)]
 pub enum LineFeed {
     #[default]
     LF,
     LF_CRLF,
 }
-
 
 impl FromStr for LineFeed {
     type Err = ();
